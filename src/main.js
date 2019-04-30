@@ -11,7 +11,7 @@ import store from './store/store'
 import alert from './alert/alert'
 Vue.use(Vuex)
 
-axios.defaults.baseURL='http://120.79.184.27/'
+axios.defaults.baseURL='http://120.79.184.27:5000/'
 axios.defaults.withCredentials=true
 
 

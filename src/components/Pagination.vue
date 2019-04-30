@@ -7,7 +7,7 @@
       <mdb-page-item  :class="{'disabled': current === 1}" v-on:click.native="setCurrent(1)">
          首页
       </mdb-page-item>
-      <mdb-page-item active v-for="(p,index) in grouplist"  :active="current === p.val" v-on:click.native="setCurrent(p.val)">
+      <mdb-page-item active v-for="(p,index) in grouplist" key="index"  :active="current === p.val" v-on:click.native="setCurrent(p.val)">
         {{ p.text }}
       </mdb-page-item>
       <mdb-page-item  :class="{'disabled': current === page}" v-on:click.native="setCurrent(page)">

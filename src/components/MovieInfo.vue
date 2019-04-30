@@ -28,21 +28,20 @@
 
       <div style="background-color: #eee">
         <mdb-row>
-          <mdb-col md="6" sm="12" xs="12" class="mt-3">
+          <mdb-col md="5" sm="12" xs="12" class="mt-3">
             <mdb-card class="p-3" style="border-radius: 20px">
               <mdb-badge pill color="green"><h5>简介</h5></mdb-badge>
               <hr/>
 
-              <mdb-card-text  class="text-justify font-weight-bolder text-monospace" style=" -webkit-line-clamp: 10;overflow: hidden;display: -webkit-box;-webkit-box-orient: vertical;white-space: normal;">
+              <mdb-card-text  class="text-justify font-weight-bolder text-monospace" style=" -webkit-line-clamp: 12;overflow: hidden;display: -webkit-box;-webkit-box-orient: vertical;white-space: normal;">
                 &nbsp;&nbsp;&nbsp;&nbsp; {{movie.description}}
               </mdb-card-text>
             </mdb-card>
           </mdb-col>
 
-          <mdb-col md="6" sm="12" xs="12" class="mt-3">
+          <mdb-col md="7" sm="12" xs="12" class="mt-3">
             <mdb-card style="border-radius: 20px" class="p-3">
               <mdb-badge pill color="orange"><h5>预告片</h5></mdb-badge>
-              <hr/>
               <video :src="movie.videoUrl" controls="controls">
                 <p>抱歉，该视频暂时找不到预告片</p>
               </video>
@@ -82,7 +81,7 @@
 
 
               <section class="demo-section">
-                <section v-for="(comment,index) in comments">
+                <section v-for="(comment,index) in comments" key="index">
                   <mdb-media class="d-block d-md-flex mt-4 pb-2">
                     <a v-on:click="getUserInfo(comment.userId)"><img class="card-img-64 d-flex mx-auto mb-3 rounded-circle" :src="comment.img" alt="Generic placeholder image"></a>
                     <mdb-media-body class="text-center text-md-left ml-md-3 ml-0 text-monospace font-weight-bolder">
@@ -122,7 +121,7 @@
                         </div>
                       </div>
 
-                      <mdb-media class="d-block d-md-flex mt-4" v-for="(subComment,index) in subComments" v-if="showSubComment === comment.id">
+                      <mdb-media class="d-block d-md-flex mt-4" v-for="(subComment,index) in subComments" key="index" v-if="showSubComment === comment.id">
                         <a v-on:click="getUserInfo(subComment.userId)"><img class="card-img-64 d-flex mx-auto mb-3 rounded-circle" :src="subComment.img" alt="Generic placeholder image"></a>
                         <mdb-media-body class="text-center text-md-left ml-md-3 ml-0">
                           <h5 class="font-weight-bold mt-0">
@@ -190,7 +189,7 @@
                         </div>
                         <div class="upload_warp" style="border: 1px solid white;">
                           <div class="upload_warp_img" v-show="imgList.length!==0" >
-                            <div class="upload_warp_img_div" v-for="(item,index) of imgList" >
+                            <div class="upload_warp_img_div" v-for="(item,index) of imgList" key="index">
                               <div class="upload_warp_img_div_top" >
                                 <div class="upload_warp_img_div_text" >
                                   {{item.file.name}}
@@ -219,7 +218,7 @@
 
                 <mdb-col md="12" col="12">
 
-                  <mdb-row v-for="(post,index) in posts">
+                  <mdb-row v-for="(post,index) in posts" key="index">
                     <mdb-col md="12" col="12">
                       <section>
                         <mdb-media class="d-block d-md-flex mt-4 pb-2">
@@ -235,7 +234,7 @@
                             <a v-on:click="deleteComment(post.id)" v-if="$store.state.user ? post.userId === $store.state.user.id : false" class="float-right"><mdb-icon far icon="trash-alt" />删除</a>
 
                             <mdb-row>
-                              <mdb-col v-for="(img,index) in post.imgs" md="3" col="3">
+                              <mdb-col v-for="(img,index) in post.imgs" key="index" md="3" col="3">
                                 <img :src="img" class="img-thumbnail">
                               </mdb-col>
                             </mdb-row>

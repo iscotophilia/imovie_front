@@ -52,7 +52,7 @@
   import Pagination from '@/components/Pagination'
   import axios from 'axios'
   import NavHeader from "@/components/NavHeader";
-  import { mdbNavbarNav,mdbNavItem,mdbNavbar,mdbPagination,mdbPageItem,mdbMedia,mdbMediaBody,mdbFileInput ,mdbEdgeHeader,mdbModal,mdbModalHeader,mdbModalTitle,mdbModalFooter,mdbModalBody,mdbMask,mdbView,mdbCardGroup,mdbCardTitle,mdbCardText,mdbCardImage,mdbTabs,mdbCard,mdbCardBody,mdbContainer,mdbInput,mdbBtn,mdbIcon,mdbRow,mdbCol,mdbCarousel, mdbCarouselItem, mdbCarouselCaption } from 'mdbvue';
+  import { mdbNavbarNav,mdbNavItem,mdbNavbar,mdbPagination,mdbPageItem,mdbMedia,mdbMediaBody ,mdbEdgeHeader,mdbModal,mdbModalHeader,mdbModalTitle,mdbModalFooter,mdbModalBody,mdbMask,mdbView,mdbCardGroup,mdbCardTitle,mdbCardText,mdbCardImage,mdbTabs,mdbCard,mdbCardBody,mdbContainer,mdbInput,mdbBtn,mdbIcon,mdbRow,mdbCol,mdbCarousel, mdbCarouselItem, mdbCarouselCaption } from 'mdbvue';
   export default {
     name: 'Register',
 
@@ -61,7 +61,6 @@
       mdbNavbar,
       mdbPagination,mdbPageItem,
       mdbMedia,mdbMediaBody,
-      mdbFileInput,
       mdbEdgeHeader,
       mdbModal,mdbModalHeader,mdbModalTitle,mdbModalFooter,mdbModalBody,
       mdbMask,

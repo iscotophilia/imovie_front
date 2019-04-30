@@ -7,10 +7,14 @@ import UserInfo from '@/components/UserInfo'
 import Top from '@/components/Top'
 import Post from '@/components/Post'
 import Register from '@/components/Register'
+import Admin from '@/components/Admin'
+import AdminUser from '@/components/AdminUser'
+import AdminComment from '@/components/AdminComment'
 
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
@@ -46,6 +50,25 @@ export default new Router({
       path:"/register",
       name:"Register",
       component:Register
+    },
+    {
+      path:"/admin",
+      name:"Admin",
+      component:Admin,
+      children: [
+        {
+          path:"/adminUser",
+          name:"AdminUser",
+          props: { page: 1 },
+          component:AdminUser
+        },
+        {
+          path:"/adminComment",
+          name:"AdminComment",
+          props: { page: 2 },
+          component:AdminComment
+        }
+      ]
     }
   ]
 })

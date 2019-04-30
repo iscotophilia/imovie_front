@@ -19,8 +19,8 @@
         <mdb-navbar-nav right>
 
           <!-- Search form -->
-          <mdb-input basic class= "p-2" placeholder="搜索电影" ariaDescribedBy="button-addon2">
-            <mdb-btn size="md" group slot="append" id="button-addon2">
+          <mdb-input id="search" basic class= "p-2" placeholder="搜索电影" ariaDescribedBy="button-addon2" @keyup.native.enter="toSearch">
+            <mdb-btn size="md" group slot="append" id="button-addon2" v-on:click.native="toSearch">
               <mdb-icon  icon="search" />
             </mdb-btn>
           </mdb-input>
@@ -243,6 +243,13 @@
 
       getUserInfo: function () {
         this.$router.push({name:'UserInfo',params:{userId:this.$store.state.user.id.toString()}})
+        this.$router.go(0)
+      },
+
+      toSearch: function () {
+        var key = document.getElementById('search').value.toString().trim()
+        this.$router.push({name:'Search',params:{name:key}})
+        this.$router.go(0)
       },
 
     }

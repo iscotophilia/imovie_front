@@ -3,7 +3,7 @@
     <NavHeader></NavHeader>
 
     <mdb-container>
-      <mdb-row v-for="(post,index) in posts">
+      <mdb-row v-for="(post,index) in posts" key="index">
         <mdb-col md="12" col="12" class="pb-3 z-depth-2 mt-5">
           <section>
             <mdb-media class="d-block d-md-flex mt-4 pb-2">
@@ -19,7 +19,7 @@
                 <a v-on:click="deleteComment(post.id)" v-if="$store.state.user ? post.userId === $store.state.user.id : false" class="float-right"><mdb-icon far icon="trash-alt" />删除</a>
 
                 <mdb-row>
-                  <mdb-col v-for="(img,index) in post.imgs" md="3" col="3">
+                  <mdb-col v-for="(img,index) in post.imgs" key="index" md="3" col="3">
                     <img :src="img" class="img-thumbnail">
                   </mdb-col>
                 </mdb-row>

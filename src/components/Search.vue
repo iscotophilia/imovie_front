@@ -8,8 +8,8 @@
           <mdb-card-body>
             <mdb-row class="align-items-center">
               <!-- Search form -->
-              <mdb-input testimonial basic class= "p-2" placeholder="搜索电影" ariaDescribedBy="button-addon2" @keyup.native.enter="toSearch">
-                <mdb-btn outline="primary" size="md" group slot="append" id="button-addon2">
+              <mdb-input id="search_text_search" testimonial basic class= "p-2" placeholder="搜索电影" ariaDescribedBy="button-addon2" @keyup.native.enter="toSearch">
+                <mdb-btn outline="primary" size="md" group slot="append" id="button-addon2" v-on:click.native="toSearch">
                   <mdb-icon  icon="search" />
                 </mdb-btn>
               </mdb-input>
@@ -25,7 +25,7 @@
               <h3>电影类型</h3>
               <mdb-row class="align-items-center mt-3">
                 <!-- Search form -->
-                <mdb-btn v-on:click.native="getTypeMovie(btnType.id)" v-for="(btnType,index) in types" :color="tagColors[parseInt(Math.random()*16-1,10)+1]">{{btnType.name}}</mdb-btn>
+                <mdb-btn v-on:click.native="getTypeMovie(btnType.id)" v-for="(btnType,index) in types" key="id" :color="tagColors[parseInt(Math.random()*16-1,10)+1]">{{btnType.name}}</mdb-btn>
               </mdb-row>
             </mdb-card-body>
           </mdb-card>
@@ -46,7 +46,7 @@
 
               <div class="mt-4 d-flex align-items-stretch">
                 <mdb-row class="clearfix">
-                  <mdb-col class="mt-3" v-for="(movie,index) in movies" md="3" col="3" style="height:0;padding-bottom: 35%" v-on:click.native="getMovieInfo(movie.id)">
+                  <mdb-col class="mt-3" v-for="(movie,index) in movies" key="index" md="3" col="3" style="height:0;padding-bottom: 35%" v-on:click.native="getMovieInfo(movie.id)">
                     <mdb-card>
                       <mdb-view>
                         <mdb-card-image :src="movie.img" alt="Card image cap" block style="height: 0; padding-bottom: 140%" ></mdb-card-image>
@@ -191,7 +191,8 @@
         )
       },
       toSearch: function (event) {
-        this.$router.push({name:'Search',params:{name:event.target.value}})
+        var key = document.getElementById('search_text_search').value.toString().trim()
+        this.$router.push({name:'Search',params:{name:key}})
         this.$router.go(0)
       },
       getTypeMovie:function (index) {

@@ -44,13 +44,14 @@
             <mdb-icon v-if="user.sex.length > 0" :icon="user.sex === '男'? 'mars': 'venus' " :class="user.sex === '男' ? 'indigo-text':'red-text'" size="2x"/>
             <p class="text-monospace">sign : [..{{user.sign}}..]</p>
             <mdb-row class="d-flex flex-row justify-content-center">
-              <mdb-btn color="primary" waves-fixed class="border nav-link border-light rounded mr-1" target="_blank" @click.native.prevent="collapse2 === true ? collapse2 = false : collapse2 = true"><mdb-icon icon="edit" class="mr-2"/>修改信息</mdb-btn>
+              <mdb-btn v-if="$store.state.user ? this.user.id === $store.state.user.id : false" color="primary" waves-fixed class="border nav-link border-light rounded mr-1" @click.native.prevent="collapse2 === true ? collapse2 = false : collapse2 = true"><mdb-icon icon="edit" class="mr-2"/>修改信息</mdb-btn>
+              <mdb-btn v-if="!$store.state.user || this.user.id !== $store.state.user.id " :color="isFollow ? 'primary':'green'" v-text="isFollow ? '已关注' : '关注'" waves-fixed class="border nav-link border-light rounded mr-1" @click.native="follow"></mdb-btn>
             </mdb-row>
 
             <transition @before-enter="beforeEnter" @enter="enter" @before-leave="beforeLeave">
               <mdb-card v-if="collapse2" class="collapse-item mt-2">
                 <mdb-card-body>
-                    <p class="h4 text-center mb-4">Sign up</p>
+                    <p class="h4 text-center mb-4">修改信息</p>
                     <div class="grey-text">
                       <label for="nickname_text" class="grey-text float-left">昵称</label>
                       <input type="text" id="nickname_text" class="form-control"/>
@@ -101,7 +102,7 @@
               <mdb-navbar class="yellow lighten-4 py-4">
                 <mdb-navbar-nav nav class="font-weight-bold">
                   <mdb-nav-item v-on:click.native="changeTabs(navChoose = 1)" :class="navChoose === 1 ? 'z-depth-1': 'z-depth-0'">看过</mdb-nav-item>
-                  <mdb-nav-item v-on:click.native="changeTabs(navChoose = 2)" :class="navChoose === 2 ? 'z-depth-1': 'z-depth-0'">收藏</mdb-nav-item>
+                  <mdb-nav-item v-if="$store.state.user ? this.user.id === $store.state.user.id : false" v-on:click.native="changeTabs(navChoose = 2)" :class="navChoose === 2 ? 'z-depth-1': 'z-depth-0'">收藏</mdb-nav-item>
                   <mdb-nav-item v-on:click.native="changeTabs(navChoose = 3)" :class="navChoose === 3 ? 'z-depth-1': 'z-depth-0'">评论</mdb-nav-item>
                 </mdb-navbar-nav>
               </mdb-navbar>
@@ -109,7 +110,7 @@
 
             <div class="mt-4 d-flex align-items-stretch" v-if="navChoose === 1 || navChoose === 2">
               <mdb-row class="clearfix">
-                <mdb-col class="mt-3" v-for="(movie,index) in movies" md="3" col="3" style="height:0;padding-bottom: 35%" v-on:click.native="getMovieInfo(movie.id)">
+                <mdb-col class="mt-3" v-for="(movie,index) in movies" key="index" md="3" col="3" style="height:0;padding-bottom: 35%" v-on:click.native="getMovieInfo(movie.id)">
                   <mdb-card>
                     <mdb-view>
                       <mdb-card-image :src="movie.img" alt="Card image cap" block style="height: 0; padding-bottom: 140%" ></mdb-card-image>
@@ -126,7 +127,7 @@
             </div>
 
             <section class="demo-section" v-if="navChoose === 3">
-              <section v-for="(comment,index) in comments">
+              <section v-for="(comment,index) in comments" key="index">
                 <mdb-media class="d-block d-md-flex mt-4 pb-2">
                   <img class="card-img-64 d-flex mx-auto mb-3 rounded-circle" :src="comment.img" alt="Generic placeholder image">
                   <mdb-media-body class="text-center text-md-left ml-md-3 ml-0 text-monospace font-weight-bolder">
@@ -151,7 +152,7 @@
           </mdb-col>
           <mdb-col md="2" class="float-right white z-depth-2">
             <h5>关注</h5>
-            <mdb-media class="d-block d-md-flex mt-4" v-for="(follow,index) in follows">
+            <mdb-media class="d-block d-md-flex mt-4" v-for="(follow,index) in follows" key="index">
               <router-link :to="{name:'UserInfo',params:{userId:follow.followId}}"><img class="card-img-64 card-img d-flex mx-auto mb-3 rounded-circle" :src="follow.img" alt="Generic placeholder image" /></router-link>
               <mdb-media-body class="text-center text-md-left ml-md-3 ml-0">
                 <h5 class="font-weight-bold mt-0">
@@ -206,7 +207,7 @@
   import Pagination from '@/components/Pagination'
   import axios from 'axios'
   import NavHeader from "@/components/NavHeader";
-  import { mdbNavbarNav,mdbNavItem,mdbNavbar,mdbPagination,mdbPageItem,mdbMedia,mdbMediaBody,mdbFileInput ,mdbEdgeHeader,mdbModal,mdbModalHeader,mdbModalTitle,mdbModalFooter,mdbModalBody,mdbMask,mdbView,mdbCardGroup,mdbCardTitle,mdbCardText,mdbCardImage,mdbTabs,mdbCard,mdbCardBody,mdbContainer,mdbInput,mdbBtn,mdbIcon,mdbRow,mdbCol,mdbCarousel, mdbCarouselItem, mdbCarouselCaption } from 'mdbvue';
+  import { mdbNavbarNav,mdbNavItem,mdbNavbar,mdbPagination,mdbPageItem,mdbMedia,mdbMediaBody ,mdbEdgeHeader,mdbModal,mdbModalHeader,mdbModalTitle,mdbModalFooter,mdbModalBody,mdbMask,mdbView,mdbCardGroup,mdbCardTitle,mdbCardText,mdbCardImage,mdbTabs,mdbCard,mdbCardBody,mdbContainer,mdbInput,mdbBtn,mdbIcon,mdbRow,mdbCol,mdbCarousel, mdbCarouselItem, mdbCarouselCaption } from 'mdbvue';
   export default {
     name: 'UserInfo',
 
@@ -215,7 +216,6 @@
       mdbNavbar,
       mdbPagination,mdbPageItem,
       mdbMedia,mdbMediaBody,
-      mdbFileInput,
       mdbEdgeHeader,
       mdbModal,mdbModalHeader,mdbModalTitle,mdbModalFooter,mdbModalBody,
       mdbMask,
@@ -269,6 +269,8 @@
         movies:[],
 
         comments:[],
+
+        isFollow:false,
       }
     },
     created() {
@@ -277,6 +279,7 @@
 
       axios.get('follow/all',{
         params:{
+          id:this.user.id,
           pageIndex:this.followpage,
           pageSize:5
         }
@@ -289,15 +292,32 @@
           }
         )
 
-      axios.get('seen/all?way=score&pageSize=12&pageIndex=0')
-        .then(data => {
-          if (data.data.code === '000000') {
-            this.total = data.data.data.pages;
-            this.movies = data.data.data.list;
-          } else
-            this.$options.methods.showModal.bind(this)(false,data.data.message)
+        axios.get('seen/all?way=score&pageSize=12&pageIndex=0&id='+this.user.id)
+          .then(data => {
+              if (data.data.code === '000000') {
+                this.total = data.data.data.pages;
+                this.movies = data.data.data.list;
+              } else
+                this.$options.methods.showModal.bind(this)(false,data.data.message)
+            }
+          )
+
+      if (this.$store.state.user ? this.$store.state.user.id !== this.user.id : false){
+        axios.get('follow/isFollow',{
+          params:{
+            followId: this.user.id
           }
-        )
+        })
+          .then(data => {
+              if (data.data.code === '000000') {
+                this.isFollow = data.data.data
+                console.log(this.isFollow)
+              } else
+                this.$options.methods.showModal.bind(this)(false,data.data.message)
+            }
+          )
+      }
+
     },
     methods: {
       pagechange:function (currentPage) {
@@ -305,6 +325,7 @@
         if (this.navChoose === 1) {
           axios.get('seen/all', {
             params:{
+              id:this.user.id,
               pageSize: 12,
               pageIndex: this.current - 1
             }
@@ -368,6 +389,7 @@
         if (this.navChoose === 1) {
           axios.get('seen/all', {
             params:{
+              id:this.user.id,
               pageSize: 12,
               pageIndex: this.current - 1
             }
@@ -543,17 +565,43 @@
           )
       },
 
-      jumpUserInfo: function (id) {
-        this.$route.params.userId = id
-        //this.$router.push({name:'UserInfo',params:{userId:id}})
+      jumpUserInfo(id) {
+        console.log(id)
+        this.$router.push({name:'UserInfo',params:{userId:id}})
+        this.$router.go(0)
       },
-    },
 
-    watch: {
-      '$route' (to, from) {
-        //this.$router.go(0)
+      follow(){
+        if (!this.isFollow) {
+          axios.get('follow/add',{
+            params:{
+              followId: this.user.id
+            }
+          })
+            .then(data => {
+                if (data.data.code === '000000') {
+                  this.isFollow = true
+                } else
+                  this.$options.methods.showModal.bind(this)(false,data.data.message)
+              }
+            )
+        } else {
+          axios.get('follow/cancel',{
+            params:{
+              followId: this.user.id
+            }
+          })
+            .then(data => {
+                if (data.data.code === '000000') {
+                  this.isFollow = false
+                } else
+                  this.$options.methods.showModal.bind(this)(false,data.data.message)
+              }
+            )
+        }
+
       }
-    }
+    },
   }
 </script>
 

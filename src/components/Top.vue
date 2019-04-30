@@ -12,7 +12,7 @@
 
       <div>
 
-        <mdb-card class="z-depth-1 mt-3" v-for="(movie,index) in movies">
+        <mdb-card class="z-depth-1 mt-3" v-for="(movie,index) in movies" key="index">
 
           <a v-on:click="getMovieInfo(movie.id)">
           <mdb-row>
