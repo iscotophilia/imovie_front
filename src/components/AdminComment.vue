@@ -15,38 +15,20 @@
                     <mdb-media-body class="text-center text-md-left ml-md-3 ml-0 text-monospace font-weight-bolder">
                       <h5 class="font-weight-bold mt-0">
                         <a v-on:click="getUserInfo(comment.userId)" style="color: blue">{{comment.name}}</a>
-                        <a v-on:click="showResponseTextarea = showResponseTextarea === comment.id ? -1 : comment.id  " class="pull-right" style="color: blue">
-                          <mdb-icon icon="reply" />
-                        </a>
                       </h5>
                       <p>{{comment.createTime}}</p>
                       {{comment.comment}}
 
 
-                      <a v-on:click="deleteComment(comment.id)" v-if="$store.state.user ? comment.userId === $store.state.user.id : false" class="float-right"><mdb-icon far icon="trash-alt" />删除</a>
+                      <a v-on:click="deleteComment(comment.id)" class="float-right"><mdb-icon far icon="trash-alt" />删除</a>
 
-                      <h6 class="float-right mt-1 mr-2">回复数：{{comment.subNum}}</h6>
+                      <h6 class="float-right mr-4 mt-1 mb-2"><b>被举报数：</b>{{comment.reportNum}}</h6>
 
-                      <a v-on:click="getSubComment(comment.id)" class="float-right"><mdb-icon  icon="caret-down" class=" indigo-text mr-4" size="2x" /></a>
+                      <a v-on:click="getReport(comment.id)" class="float-right"><mdb-icon  icon="caret-down" class=" indigo-text mr-4" size="2x" /></a>
 
-
-                      <a v-on:click="love(comment)">
-                        <mdb-icon :far="$store.state.user ? (comment.userId === $store.state.user.id && !comment.isLove) : true" icon="heart" class="red-text float-right mr-4" size="2x" ></mdb-icon>
-                      </a>
-                      <h4 class="float-right mr-2 mt-1">{{comment.loveNum}}</h4>
-
-                      <mdb-media class="d-block d-md-flex mt-4" v-for="(subComment,index) in subComments" key="index" v-if="showSubComment === comment.id">
-                        <a v-on:click="getUserInfo(subComment.userId)"><img class="card-img-64 d-flex mx-auto mb-3 rounded-circle" :src="subComment.img" alt="Generic placeholder image"></a>
+                      <mdb-media class="d-block d-md-flex mt-4" v-for="(report,index) in reports" key="index" v-if="showSubComment === comment.id">
                         <mdb-media-body class="text-center text-md-left ml-md-3 ml-0">
-                          <h5 class="font-weight-bold mt-0">
-                            <a v-on:click="getUserInfo(comment.userId)" style="color: blue">{{subComment.name}}</a>
-                            <a v-on:click="showResponseTextarea = showResponseTextarea === subComment.id ? -1 : subComment.id  " class="pull-right" style="color: blue">
-                              <mdb-icon icon="reply" />
-                            </a>
-                          </h5>
-                          {{subComment.comment}}
-
-                          <a v-on:click="deleteComment(subComment.id)" v-if="$store.state.user ? comment.userId === $store.state.user.id : false" class="float-right ml-2"><mdb-icon far icon="trash-alt" />删除</a>
+                          {{report.reason}}
 
                           <hr/>
                         </mdb-media-body>
@@ -125,7 +107,7 @@
         current:1,
         showOne:true,
         comments:[],
-        subComments:[],
+        reports:[],
 
         optionsShow:false,
         options:{
@@ -178,25 +160,24 @@
         this.options.text=text
       },
 
-      getSubComment(index){
+      getReport(index){
         if (this.showSubComment !== index){
-          this.subComments = []
+          this.reports = []
           this.showSubComment = index
         } else{
           this.showSubComment=-1
         }
         console.log(this.showSubComment)
         console.log(index)
-        axios.get('comment/subComment', {
+        axios.get('report/commentReport', {
           params: {
-            movieId: this.movie.id,
-            pageIndex: 0,
-            pageSize: 50,
-            parentId: index
+            id: index
           }
         }).then(data => {
-            if (data.data.code === '000000')
-              this.subComments = data.data.data.list;
+            if (data.data.code === '000000'){
+              this.reports = data.data.data;
+            }
+
             else
               this.$options.methods.showModal.bind(this)(false,data.data.message)
           }

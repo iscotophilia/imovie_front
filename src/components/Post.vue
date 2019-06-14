@@ -16,7 +16,7 @@
                 <p>{{post.createTime}}</p>
                 {{post.text}}
 
-                <a v-on:click="deleteComment(post.id)" v-if="$store.state.user ? post.userId === $store.state.user.id : false" class="float-right"><mdb-icon far icon="trash-alt" />删除</a>
+                <a v-on:click="deletePost(post.id)" v-if="$store.state.user ? post.userId === $store.state.user.id : false" class="float-right"><mdb-icon far icon="trash-alt" />删除</a>
 
                 <mdb-row>
                   <mdb-col v-for="(img,index) in post.imgs" key="index" md="3" col="3">
@@ -174,6 +174,19 @@
 
       getMovieInfo: function (id) {
         this.$router.push({name:'MovieInfo',params:{id:id}})
+      },
+
+      deletePost(index){
+        axios.delete('post/delete?postId='+index
+        ).then(data => {
+            if (data.data.code === '000000'){
+              this.$options.methods.showModal.bind(this)(true,'删除成功')
+              this.$options.methods.getPost.bind(this)()
+            }
+            else
+              this.$options.methods.showModal.bind(this)(false,data.data.message)
+          }
+        )
       },
 
     }

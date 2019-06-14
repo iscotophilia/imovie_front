@@ -132,7 +132,7 @@
                   <img class="card-img-64 d-flex mx-auto mb-3 rounded-circle" :src="comment.img" alt="Generic placeholder image">
                   <mdb-media-body class="text-center text-md-left ml-md-3 ml-0 text-monospace font-weight-bolder">
                     <h5 class="font-weight-bold mt-0">
-                      <router-link :to="{name:'UserInfo',params:{userId:$store.state.user.id.toString()}}"><a>{{comment.name}}</a></router-link>   <label> <a style="color: #00e25b" v-on:click="getMovieInfo(comment.movieId)">  #{{comment.movieId}}</a> </label>
+                      <a>{{comment.name}}</a>   <label> <a style="color: #00e25b" v-on:click="getMovieInfo(comment.movieId)">  #{{comment.movieId}}</a> </label>
                     </h5>
                     <p>{{comment.createTime}}</p>
                     {{comment.comment}}
@@ -153,10 +153,10 @@
           <mdb-col md="2" class="float-right white z-depth-2">
             <h5>关注</h5>
             <mdb-media class="d-block d-md-flex mt-4" v-for="(follow,index) in follows" key="index">
-              <router-link :to="{name:'UserInfo',params:{userId:follow.followId}}"><img class="card-img-64 card-img d-flex mx-auto mb-3 rounded-circle" :src="follow.img" alt="Generic placeholder image" /></router-link>
+              <router-link :to="{name:'UserInfo',params:{userId:follow.id}}"><img class="card-img-64 card-img d-flex mx-auto mb-3 rounded-circle" :src="follow.img" alt="Generic placeholder image" /></router-link>
               <mdb-media-body class="text-center text-md-left ml-md-3 ml-0">
                 <h5 class="font-weight-bold mt-0">
-                  <a v-on:click="jumpUserInfo(follow.userId)" style="color: blue">{{follow.name}}</a>
+                  <a v-on:click="jumpUserInfo(follow.id)" style="color: blue">{{follow.name}}</a>
                 </h5>
                 ...{{follow.sign}}...
 

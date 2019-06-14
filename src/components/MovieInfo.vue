@@ -90,6 +90,7 @@
                         <a v-on:click="showResponseTextarea = showResponseTextarea === comment.id ? -1 : comment.id  " class="pull-right" style="color: blue">
                           <mdb-icon icon="reply" />
                         </a>
+                        <a class="float-right mt-1 mr-2" v-on:click="showReport(comment.id,'reportComment')" style="color: red" >举报</a>
                       </h5>
                       <p>{{comment.createTime}}</p>
                       {{comment.comment}}
@@ -103,7 +104,7 @@
 
 
                       <a v-on:click="love(comment)">
-                        <mdb-icon :far="$store.state.user ? (comment.userId === $store.state.user.id && !comment.isLove) : true" icon="heart" class="red-text float-right mr-4" size="2x" ></mdb-icon>
+                        <mdb-icon :far="$store.state.user ? (!comment.isLove) : true" icon="heart" class="red-text float-right mr-4" size="2x" ></mdb-icon>
                       </a>
                       <h4 class="float-right mr-2 mt-1">{{comment.loveNum}}</h4>
 
@@ -128,13 +129,15 @@
                             <a v-on:click="getUserInfo(comment.userId)" style="color: blue">{{subComment.name}}</a>
                             <a v-on:click="showResponseTextarea = showResponseTextarea === subComment.id ? -1 : subComment.id  " class="pull-right" style="color: blue">
                               <mdb-icon icon="reply" />
+
+                              <a class="float-right mt-1 mr-2" v-on:click="showReport(subComment.id,'reportComment')" style="color: red" >举报</a>
                             </a>
                           </h5>
                           {{subComment.comment}}
 
                           <a v-on:click="deleteComment(subComment.id)" v-if="$store.state.user ? comment.userId === $store.state.user.id : false" class="float-right ml-2"><mdb-icon far icon="trash-alt" />删除</a>
 
-                          <a v-on:click="love(subComment)"><mdb-icon :far="$store.state.user ? (subComment.userId === $store.state.user.id && !subComment.isLove) : true" icon="heart" class="red-text float-right mr-4" size="2x" ></mdb-icon></a>
+                          <a v-on:click="love(subComment)"><mdb-icon :far="$store.state.user ? !subComment.isLove : true" icon="heart" class="red-text float-right mr-4" size="2x" ></mdb-icon></a>
                           <h4 class="float-right mr-2 mt-1">{{subComment.loveNum}}</h4>
 
                           <div  v-if="showResponseTextarea === subComment.id">
@@ -231,7 +234,7 @@
                             <p>{{post.createTime}}</p>
                             {{post.text}}
 
-                            <a v-on:click="deleteComment(post.id)" v-if="$store.state.user ? post.userId === $store.state.user.id : false" class="float-right"><mdb-icon far icon="trash-alt" />删除</a>
+                            <a v-on:click="deletePost(post.id)" v-if="$store.state.user ? post.userId === $store.state.user.id : false" class="float-right"><mdb-icon far icon="trash-alt" />删除</a>
 
                             <mdb-row>
                               <mdb-col v-for="(img,index) in post.imgs" key="index" md="3" col="3">
@@ -278,6 +281,22 @@
         <mdb-modal-footer center>
           <mdb-btn :color="!this.options.error ? 'success':'danger'" @click="optionsShow = false">确认</mdb-btn>
           <mdb-btn :outline="!this.options.error ? 'success':'danger'" @click="optionsShow = false">关闭</mdb-btn>
+        </mdb-modal-footer>
+      </mdb-modal>
+    </div>
+
+    <div>
+      <mdb-modal v-if="showReportModual" @close="showReportModual = false">
+        <mdb-modal-header>
+          <mdb-modal-title>举报</mdb-modal-title>
+        </mdb-modal-header>
+        <mdb-modal-body  class="text-center">
+          <h4>举报原因</h4>
+          <textarea id="reportReason" class="form-control" rows="5"></textarea>
+        </mdb-modal-body>
+        <mdb-modal-footer center>
+          <mdb-btn color="primary" @click="report()">确认</mdb-btn>
+          <mdb-btn outline="primary" @click="showReportModual = false">关闭</mdb-btn>
         </mdb-modal-footer>
       </mdb-modal>
     </div>
@@ -351,7 +370,11 @@
         },
 
         imgList: [],
-        size: 0
+        size: 0,
+
+        showReportModual:false,
+        reportId:-1,
+        reportType:'reportComment'
       }
     },
     created() {
@@ -361,7 +384,7 @@
               if (data.data.code === '000000')
                 this.movie = data.data.data;
               else
-                alert(data.data.message)
+                this.$options.methods.showModal.bind(this)(false,data.data.message)
             }
           )
         this.$options.methods.requestComments.bind(this)()
@@ -489,6 +512,10 @@
           this.$options.methods.showModal.bind(this)(false,'评论不能为空')
           return
         }
+        if (this.$store.state.user && ((this.$store.state.user.status & 4) > 0)){
+          this.$options.methods.showModal.bind(this)(false,'评论失败，你已经被禁言')
+          return
+        }
         axios.post('comment/add',{
           movieId:this.movie.id,
           comment:comment
@@ -500,7 +527,7 @@
                 this.current = 1
                 this.$options.methods.requestComments.bind(this)()
               }
-              else
+              else if (data.data.toString() !== '401')
                 this.$options.methods.showModal.bind(this)(false,data.data.message)
             }
           )
@@ -514,6 +541,10 @@
           comment = document.getElementById("response_comment_text").value
         if (comment.length === 0){
           this.$options.methods.showModal.bind(this)(false,'评论不能为空')
+          return
+        }
+        if (this.$store.state.user && ((this.$store.state.user.status & 4) > 0)){
+          this.$options.methods.showModal.bind(this)(false,'评论失败，你已经被禁言')
           return
         }
         if(isSub)
@@ -534,7 +565,7 @@
                 else
                   document.getElementById("response_comment_text").value=''
               }
-              else
+              else if (data.data.toString() !== '401')
                 this.$options.methods.showModal.bind(this)(false,data.data.message)
             }
           )
@@ -544,6 +575,10 @@
         var text = document.getElementById("post_text").value.toString().trim()
         if (text.length ===0 && this.imgList.length === 0){
           this.$options.methods.showModal.bind(this)(false,'必须提供文本或者图片')
+          return
+        }
+        if (this.$store.state.user && ((this.$store.state.user.status & 4) > 0)){
+          this.$options.methods.showModal.bind(this)(false,'评论失败，你已经被禁言')
           return
         }
         var fd = new FormData()
@@ -562,7 +597,7 @@
               document.getElementById("post_text").value = ''
               this.$options.methods.getPost.bind(this)()
             }
-            else{
+            else  if (data.data.toString() !== '401') {
               this.$options.methods.showModal.bind(this)(false,response.data.message)
             }
           })
@@ -585,7 +620,7 @@
                 this.posts = data.data.data.list
               }
               else
-                alert(data.data.message)
+                this.$options.methods.showModal.bind(this)(false,response.data.message)
             }
           )
       },
@@ -632,6 +667,19 @@
             if (data.data.code === '000000'){
               this.$options.methods.showModal.bind(this)(true,'删除成功')
               this.$options.methods.requestComments.bind(this)()
+            }
+            else
+              this.$options.methods.showModal.bind(this)(false,data.data.message)
+          }
+        )
+      },
+
+      deletePost(index){
+        axios.delete('post/delete?postId='+index
+        ).then(data => {
+            if (data.data.code === '000000'){
+              this.$options.methods.showModal.bind(this)(true,'删除成功')
+              this.$options.methods.getPost.bind(this)()
             }
             else
               this.$options.methods.showModal.bind(this)(false,data.data.message)
@@ -696,6 +744,35 @@
       getMovieInfo: function (id) {
         this.$router.push({name:'MovieInfo',params:{id:id}})
       },
+
+      showReport(id,type){
+        this.reportId = id
+        this.reportType = type
+        this.showReportModual = true
+      },
+
+      report(){
+        var reason = document.getElementById('reportReason').value.toString()
+        console.log(this.reportId)
+        console.log(reason)
+          axios.post('/report/'+this.reportType, {
+            commentId: this.reportId,
+            reason: reason,
+            postId: this.reportId
+          })
+            .then((data)=>{
+              this.showReportModual = false
+              if (data.data.code === '000000'){
+                this.$options.methods.showModal.bind(this)(true,'举报成功')
+              }
+              else{
+                this.$options.methods.showModal.bind(this)(false,data.data.message)
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+            });
+        }
 
     }
   }

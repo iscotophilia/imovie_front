@@ -9,10 +9,11 @@
 
       <mdb-navbar-toggler>
         <mdb-navbar-nav left>
-          <mdb-nav-item href="/" active>主页</mdb-nav-item>
-          <mdb-nav-item href="/#/top">榜单</mdb-nav-item>
+          <mdb-nav-item @click.native="$router.push({name:'home'})" active>主页</mdb-nav-item>
+          <mdb-nav-item @click.native="$router.push({name:'Top'})">榜单</mdb-nav-item>
           <mdb-nav-item @click.native="$router.push({name:'Search',params:{name: '*' }})">类别</mdb-nav-item>
-          <mdb-nav-item href="/#/post">帖子</mdb-nav-item>
+          <mdb-nav-item @click.native="$router.push({name:'Post'})">帖子</mdb-nav-item>
+          <mdb-nav-item @click.native="$router.push({name:'Admin'})" v-if="isLogin ? ($store.state.user.status & 1) === 1 : false">管理员</mdb-nav-item>
           <!--<mdb-nav-item href="#">答题</mdb-nav-item>-->
         </mdb-navbar-nav>
 
@@ -169,6 +170,12 @@
         })
           .then((response)=>{
             if (response.data.code === '000000'){
+              if ((response.data.data.status & 2)  > 0) {
+                this.loginError = '登录失败，您没有登录权限'
+                this.showError = true
+                this.$options.methods.logout.bind(this)();
+                return
+              }
               this.$store.commit('login',response.data.data)
               this.isLogin = true
               this.showModal=false

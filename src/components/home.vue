@@ -8,7 +8,7 @@
           <mdb-carousel-caption title="机器人总动员" text=""></mdb-carousel-caption>
         </mdb-carousel-item>
         <mdb-carousel-item img src="http://120.79.184.27:81/front/carousel/carousel02.jpg" mask="black-light" alt="Second slide">
-          <mdb-carousel-caption title="加勒比海盗3" text=""></mdb-carousel-caption>
+          <mdb-carousel-caption title="加勒比海盗4" text=""></mdb-carousel-caption>
         </mdb-carousel-item>
         <mdb-carousel-item img src="http://120.79.184.27:81/front/carousel/carousel03.jpg" mask="black-light" alt="Third slide">
           <mdb-carousel-caption title="阿丽塔 战斗天使" text=""></mdb-carousel-caption>
@@ -65,7 +65,7 @@
             </mdb-card-body>
 
 
-            <v-pagination class="mx-auto mt-2" :total="total-1" :current-page='current' @pagechange="pagechange"></v-pagination>
+            <v-pagination class="mx-auto mt-2" :total="total" :current-page='current' @pagechange="pagechange"></v-pagination>
 
           </mdb-card>
 
